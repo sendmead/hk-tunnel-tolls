@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港隧道費</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <button id="lang-toggle" class="lang-switch">EN</button>
+        <header>
+            <h1 id="app-title">香港隧道費</h1>
+            <p class="subtitle">🚗</p>
+        </header>
+
+        <div class="current-time-display" id="selected-time-display">
+            <!-- JS will populate this -->
+        </div>
+
+        <div class="tunnels-grid" id="tunnels-container">
+            <!-- Tunnel cards will be injected here -->
+        </div>
+
+        <div class="info-section">
+            <h3 id="schedule-title">收費時間表</h3>
+            <div class="timeline-header" id="timeline-header">
+                <div></div>
+                <div></div>
+                <div>西</div>
+                <div>紅</div>
+                <div>東</div>
+                <div>大</div>
+            </div>
+            <div id="timeline-container">
+                <!-- Timeline details will go here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-wrapper">
+        <div class="controls">
+            <div class="control-group time-group">
+                <div class="time-selectors">
+                    <select id="hour-select"></select>
+                    <span class="time-separator">:</span>
+                    <select id="minute-select"></select>
+                </div>
+            </div>
+            <div class="control-group checkbox-group">
+                <input type="checkbox" id="holiday-toggle">
+                <label for="holiday-toggle" id="holiday-label">星期日 / 公眾假期</label>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
