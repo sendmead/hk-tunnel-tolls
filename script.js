@@ -206,45 +206,28 @@ const scheduleTitle = document.getElementById('schedule-title');
 const holidayLabel = document.getElementById('holiday-label');
 const timelineHeader = document.getElementById('timeline-header');
 
-// Populate Selectors with Infinite Loop Logic
-function populateSelect(selectElement, max) {
-    selectElement.innerHTML = '';
-    const sets = ['prev', 'curr', 'next'];
-    sets.forEach(prefix => {
-        for (let i = 0; i < max; i++) {
-            const opt = document.createElement('option');
-            opt.value = `${prefix}_${i}`;
-            opt.text = i.toString().padStart(2, '0');
-            selectElement.appendChild(opt);
-        }
-    });
+// Populate Selectors
+for (let i = 0; i < 24; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.text = i.toString().padStart(2, '0');
+    hourSelect.appendChild(opt);
+}
+for (let i = 0; i < 60; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.text = i.toString().padStart(2, '0');
+    minuteSelect.appendChild(opt);
 }
 
-populateSelect(hourSelect, 24);
-populateSelect(minuteSelect, 60);
-
-// Set default to now (middle set)
+// Set default to now
 const now = new Date();
-hourSelect.value = `curr_${now.getHours()}`;
-minuteSelect.value = `curr_${now.getMinutes()}`;
+hourSelect.value = now.getHours();
+minuteSelect.value = now.getMinutes();
 
 // Check if today is Sunday
 if (now.getDay() === 0) {
     holidayToggle.checked = true;
-}
-
-function handleInfiniteLoop(selectElement) {
-    const value = selectElement.value;
-    if (!value.includes('_')) return parseInt(value); // Fallback
-    
-    const [prefix, numStr] = value.split('_');
-    const num = parseInt(numStr);
-    
-    if (prefix !== 'curr') {
-        // Switch back to middle set silently
-        selectElement.value = `curr_${num}`;
-    }
-    return num;
 }
 
 function updateStaticText() {
@@ -263,9 +246,14 @@ function updateStaticText() {
     headerDivs[5].textContent = t.timelineHeader[3];
 }
 
+function getClockEmoji(hour) {
+    const clocks = ['🕛', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚'];
+    return clocks[hour % 12];
+}
+
 function updateUI() {
-    const h = handleInfiniteLoop(hourSelect);
-    const m = handleInfiniteLoop(minuteSelect);
+    const h = parseInt(hourSelect.value);
+    const m = parseInt(minuteSelect.value);
     const isHoliday = holidayToggle.checked;
     const t = translations[currentLang];
     
@@ -316,6 +304,7 @@ function updateUI() {
     
     let iterations = 0;
     const maxIterations = 100; // Increased limit to allow for more items
+    let lastHour = -1;
     
     while (simMinutes < endMinutes && iterations < maxIterations) {
         // Determine effective time and holiday status for calculation
@@ -385,6 +374,14 @@ function updateUI() {
         const startTimeStr = minutesToTime(simMinutes);
         const endTimeStr = minutesToTime(nextChangeAbsolute);
         
+        // Determine clock emoji
+        const currentHour = Math.floor((simMinutes % 1440) / 60);
+        let clockIcon = '';
+        if (currentHour !== lastHour) {
+            clockIcon = getClockEmoji(currentHour);
+            lastHour = currentHour;
+        }
+
         const item = document.createElement('div');
         item.className = 'timeline-item';
         if (iterations >= 20) {
@@ -405,7 +402,7 @@ function updateUI() {
         }
 
         item.innerHTML = `
-            <div class="timeline-icon">🕒</div>
+            <div class="timeline-icon">${clockIcon}</div>
             <span class="timeline-time">${startTimeStr} - ${endTimeStr}</span>
             ${pricesHtml}
         `;

@@ -40,7 +40,7 @@ h1 {
 .subtitle {
     color: var(--text-secondary);
     margin: 4px 0 0;
-    font-size: 14px;
+    font-size: 48px;
 }
 
 .controls-wrapper {
